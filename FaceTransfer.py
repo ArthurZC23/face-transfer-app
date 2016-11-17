@@ -32,24 +32,38 @@ semantic_positions = dict([
 ('background', [])
 ])
 
-
 class FaceTransfer():
     
-    
     def __init__(self, content, style):
+        
+        self.content_name = None
+        self.style_name = None
+        self.load_content(content)
+        self.load_style(style)                                            
+                        
+    def load_content(self, content):
    
-        #Load original images RGB and semantic maps RGBA
+        #Contet is just the name
+    
+        if not(self.content_name == content):
+            self.content_name = content
+            content_path = './images/' + content + '/originals/image.png' 
+            content_map_path = './images/' + content + '/maps/map.png' 
+
+            self.content, self.content_map = scipy.ndimage.imread(content_path), scipy.ndimage.imread(content_map_path)        
+
+            #Save the content as output for display
+            self.output_image = self.content         
+            scipy.misc.imsave('./images/output.png', self.output_image)               
+
+            #Get the positions of all regions on the semantic map
+            self.semantic_position()         
         
-        self.content, self.content_map = scipy.ndimage.imread(content + '.jpg'), scipy.ndimage.imread(content + '_sem' + '.png')
-        self.style, self.style_map = scipy.ndimage.imread(style + '.jpg'), scipy.ndimage.imread(style + '_sem' + '.png')
+    def load_style(self, name):
         
-        self.output_image = self.content         
-        scipy.misc.imsave('./images/output.jpg', self.output_image)               
-                    
-        #Get the positions of all regions on the semantic map
-        self.semantic_position() 
-        print(semantic_positions['eyes'])
-        
+        self.style_name = name  
+        self.style_path = './images/' + self.content_name + '/styles/' + name + '/' 
+            
     def semantic_position(self):
             
         #Clear the semantic_positions    
@@ -81,16 +95,15 @@ class FaceTransfer():
             elif (map_colors[idx] == semantic_colors['background']).all():
                 semantic_positions['background'].append(idx)    
                 
-    def new_style(self, region, value, content, style):        
-  
-        content = content.split('/')[-1]
-        style = style.split('/')[-1]
-        new_style_image = scipy.ndimage.imread('./images/' + content + 'As' + style + str(value) + '.jpg')        
+    def change_texture(self, region, value, content, style):        
+                          
+        change_texture_image = scipy.ndimage.imread(self.style_path + \
+        self.content_name + 'As' + self.style_name + str(value) + '.png')        
         h, w ,d = tuple(self.output_image.shape)    
         self.output_image = np.reshape(self.output_image, (h*w,d))
-        new_style_image = np.reshape(new_style_image, (h*w,d))
+        change_texture_image = np.reshape(change_texture_image, (h*w,d))
         #Update region
         for position in semantic_positions[region]:
-            self.output_image[position] = new_style_image[position] 
+            self.output_image[position] = change_texture_image[position] 
         self.output_image = np.reshape(self.output_image, (h,w,d))
-        scipy.misc.imsave('./images/output.jpg', self.output_image)                                      
+        scipy.misc.imsave('./images/output.png', self.output_image) #Change        
