@@ -10,13 +10,7 @@ with open('names.txt', 'r') as f:
     names = f.read().splitlines()
 
 for name in names:
+
+    img = Image.open(name)        
     
-    number = int(re.findall(r'\d+', name)[0])
-    
-    number /= 5
-    
-    img = Image.open(name)
-    
-    new_name = re.search(find, name).group(0)
-    
-    img.save(new_name + str(number) + '.png', 'png')
+    img.save(name.split('.')[0] + '.png', 'png')
