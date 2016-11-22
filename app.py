@@ -6,8 +6,8 @@ from PIL import Image, ImageTk
 parser = argparse.ArgumentParser(description='Controle de transferência de estilo.',
                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 add_arg = parser.add_argument
-add_arg('--content',        default=None, type=str,         help='Image de conteúdo.')
-add_arg('--style',        default=None, type=str,         help='Imagem de estilo.')
+add_arg('--content',        default='Arthur', type=str,         help='Image de conteúdo.')
+add_arg('--style',        default='Morgan', type=str,         help='Imagem de estilo.')
 args = parser.parse_args()
 
 def change_content(e):
@@ -83,8 +83,7 @@ label.config(text = 'style')
 label.pack(side=LEFT)
 style_listbox = Listbox(bottomframe)
 style_listbox.pack(side = LEFT)   
-for item in ["Morgan Freeman", "Brad Pitt", "Channing Tatum", \
-            'Michael Jackson']:
+for item in ["Morgan Freeman", "Arthur", "Sergio", "Matheus"]:
     style_listbox.insert(END, item)                 
 style_listbox.bind('<<ListboxSelect>>', change_style)
 
