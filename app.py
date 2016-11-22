@@ -62,7 +62,7 @@ scale_list = []
 for scale in ('hair', 'skin', 'eyebrows', 'eyes', 'nose', 'beard', 'ears', 'mouth'):            
     label = Label(frame)
     label.config(text = scale)                
-    widget = Scale(frame, from_=0, to=6, orient="horizontal",
+    widget = Scale(frame, from_=0, to=4, orient="horizontal",
                       command=lambda value, name=scale: update_texture(name, value))        
     label.pack(side=LEFT)
     widget.pack(side=LEFT)
